@@ -21,7 +21,6 @@ def get_availability(adate):
     centerFound = False
 
     URL = BASE_URL+ adate
-    print(URL)
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
     states = requests.get(URL, headers=headers)
     centers = states.json()['centers']
@@ -33,9 +32,11 @@ def get_availability(adate):
 
     return centerFound, centers
 
-
-@app.route('/<date>')
+@app.route('/')
+@app.route('/getAvailability/<date>')
 def getAvailability(date=None):
-    availability, centers = get_availability(date)
-    return render_template('index.html', date=date, availability=availability, centers=centers)
-
+    if date != None:
+        availability, centers = get_availability(date)
+        return render_template('index.html', date=date, availability=availability, centers=centers)
+    else:
+        return render_template('index.html', date="", availability="", centers="")
